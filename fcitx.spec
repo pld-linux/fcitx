@@ -1,7 +1,6 @@
 # TODO:
 # - kill /usr/bin/env dependencies
 # - split gtk/qt parts, maybe engines (pinyin, qw, table)
-# - presage support
 #
 # Conditional build:
 %bcond_without	gtk2	# GTK+ 2.x IM module
@@ -12,12 +11,12 @@
 Summary:	Fcitx - input method framework with extension support
 Summary(pl.UTF-8):	Fcitx - szkielet metody wprowadzania znaków z obsługą rozszerzeń
 Name:		fcitx
-Version:	4.2.9.5
+Version:	4.2.9.6
 Release:	1
 License:	GPL v2+ with plugins exception
 Group:		X11/Applications
 Source0:	https://download.fcitx-im.org/fcitx/%{name}-%{version}.tar.xz
-# Source0-md5:	eea2fd7789fa6017d66506c286838361
+# Source0-md5:	88631df4af0b8d9fc7a816dd135fa97b
 URL:		https://fcitx-im.org/
 BuildRequires:	QtCore-devel >= 4
 BuildRequires:	QtDBus-devel >= 4
@@ -40,7 +39,7 @@ BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	opencc-devel
 BuildRequires:	pango-devel >= 1:1.0
 BuildRequires:	pkgconfig
-# TODO: presage-devel
+BuildRequires:	presage-devel
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xkeyboard-config
 BuildRequires:	xorg-lib-libX11-devel
