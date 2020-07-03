@@ -11,12 +11,12 @@
 Summary:	Fcitx - input method framework with extension support
 Summary(pl.UTF-8):	Fcitx - szkielet metody wprowadzania znaków z obsługą rozszerzeń
 Name:		fcitx
-Version:	4.2.9.6
+Version:	4.2.9.7
 Release:	1
 License:	GPL v2+ with plugins exception
 Group:		X11/Applications
 Source0:	https://download.fcitx-im.org/fcitx/%{name}-%{version}.tar.xz
-# Source0-md5:	88631df4af0b8d9fc7a816dd135fa97b
+# Source0-md5:	c58869c4ef9d3f57287a3d1f539c9850
 URL:		https://fcitx-im.org/
 BuildRequires:	QtCore-devel >= 4
 BuildRequires:	QtDBus-devel >= 4
@@ -100,6 +100,10 @@ Pliki nagłówkowe bibliotek Fcitx.
 
 %prep
 %setup -q
+
+%{__sed} -i -e '1s,/usr/bin/env bash,/bin/bash,' \
+	cmake/fcitx-{cmake-helper,extract-{confdesc,desktop,gettext,kde,po,qt},merge-config}.sh \
+	data/script/fcitx-diagnose.sh
 
 %build
 install -d build
