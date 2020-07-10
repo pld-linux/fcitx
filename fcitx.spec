@@ -1,6 +1,3 @@
-# TODO:
-# - kill /usr/bin/env dependencies
-# - split gtk/qt parts, maybe engines (pinyin, qw, table)
 #
 # Conditional build:
 %bcond_without	gtk2	# GTK+ 2.x IM module
@@ -18,24 +15,25 @@ Group:		X11/Applications
 Source0:	https://download.fcitx-im.org/fcitx/%{name}-%{version}.tar.xz
 # Source0-md5:	c58869c4ef9d3f57287a3d1f539c9850
 URL:		https://fcitx-im.org/
-BuildRequires:	QtCore-devel >= 4
-BuildRequires:	QtDBus-devel >= 4
-BuildRequires:	QtGui-devel >= 4
 BuildRequires:	cairo-devel >= 1.0
 BuildRequires:	cmake >= 3.1
 BuildRequires:	dbus-devel >= 1.1.0
 BuildRequires:	doxygen
 BuildRequires:	enchant-devel
+BuildRequires:	fontconfig-devel
 BuildRequires:	gcc >= 5:3.2
+BuildRequires:	gettext-devel
 BuildRequires:	gettext-tools
 BuildRequires:	glib2-devel >= 1:2.26
 BuildRequires:	gobject-introspection-devel
 %{?with_gtk2:BuildRequires:	gtk+2-devel >= 1:2.0}
 %{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0}
+BuildRequires:	iso-codes
+BuildRequires:	json-c-devel
 BuildRequires:	kf5-extra-cmake-modules >= 0.0.11
 BuildRequires:	libuuid-devel
 BuildRequires:	libxml2-devel >= 2.0
-%{?with_lua:BuildRequires:	lua51-devel >= 5.1}
+%{?with_lua:BuildRequires:	lua52-devel >= 5.2}
 BuildRequires:	opencc-devel
 BuildRequires:	pango-devel >= 1:1.0
 BuildRequires:	pkgconfig
@@ -46,6 +44,7 @@ BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXfixes-devel
 BuildRequires:	xorg-lib-libXinerama-devel
 BuildRequires:	xorg-lib-libxkbcommon-devel >= 0.5.0
+BuildRequires:	xorg-lib-libxkbfile-devel
 BuildRequires:	xz
 %if %{with qt}
 BuildRequires:	QtCore-devel >= 4.8
@@ -74,6 +73,30 @@ Fcitx próbuje zapewnić natywne zachowanie we wszystkich środowiskach,
 a także lekką część główną. Można go łatwo konfigurować, aby
 dostosować do własnych wymagań.
 
+%package gtk2
+Summary:	GTK+ 2.x Fcitx input method module
+Summary(pl.UTF-8):	Moduł metody wprowadzania Fcitx dla GTK+ 2.x
+Group:		X11/Libraries
+Requires:	%{name}-glib = %{version}-%{release}
+
+%description gtk2
+GTK+ 2.x Fcitx input method module.
+
+%description gtk2 -l pl.UTF-8
+Moduł metody wprowadzania Fcitx dla GTK+ 2.x.
+
+%package gtk3
+Summary:	GTK+ 3.x Fcitx input method module
+Summary(pl.UTF-8):	Moduł metody wprowadzania Fcitx dla GTK+ 3.x
+Group:		X11/Libraries
+Requires:	%{name}-glib = %{version}-%{release}
+
+%description gtk3
+GTK+ 3.x Fcitx input method module.
+
+%description gtk3 -l pl.UTF-8
+Moduł metody wprowadzania Fcitx dla GTK+ 3.x.
+
 %package libs
 Summary:	Fcitx shared libraries
 Summary(pl.UTF-8):	Biblioteki współdzielone Fcitx
@@ -97,6 +120,64 @@ Header files for Fcitx libraries.
 
 %description devel -l pl.UTF-8
 Pliki nagłówkowe bibliotek Fcitx.
+
+%package glib
+Summary:	Fcitx client library for GLib
+Summary(pl.UTF-8):	Biblioteka kliencka Fcitx dla GLiba
+Group:		Libraries
+Requires:	%{name}-libs = %{version}-%{release}
+Requires:	glib2 >= 1:2.26
+
+%description glib
+Fcitx client library for GLib.
+
+%description glib -l pl.UTF-8
+Biblioteka kliencka Fcitx dla GLiba.
+
+%package glib-devel
+Summary:	Header files for Fcitx client library for GLib
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej Fcitx dla GLiba
+Group:		Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-glib = %{version}-%{release}
+Requires:	glib2-devel >= 1:2.26
+
+%description glib-devel
+Header files for Fcitx client library for GLib.
+
+%description glib-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki klienckiej Fcitx dla GLiba.
+
+%package qt
+Summary:	Fcitx client/GUI library for Qt
+Summary(pl.UTF-8):	Biblioteka kliencka/GUI Fcitx dla Qt
+Group:		Libraries
+Requires:	%{name}-libs = %{version}-%{release}
+Requires:	QtCore >= 4.8
+Requires:	QtDBus >= 4.8
+Requires:	QtGui >= 4.8
+
+%description qt
+Fcitx client/GUI library for Qt.
+
+%description qt -l pl.UTF-8
+Biblioteka kliencka/GUI Fcitx dla Qt.
+
+%package qt-devel
+Summary:	Header files for Fcitx client/GUI library for Qt
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej/GUI Fcitx dla Qt
+Group:		Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-qt = %{version}-%{release}
+Requires:	QtCore-devel >= 4.8
+Requires:	QtDBus-devel >= 4.8
+Requires:	QtGui-devel >= 4.8
+
+%description qt-devel
+Header files for Fcitx client/GUI library for Qt.
+
+%description qt-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki klienckiej/GUI Fcitx dla Qt.
 
 %prep
 %setup -q
@@ -143,8 +224,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/fcitx
 %attr(755,root,root) %{_bindir}/fcitx-autostart
 %attr(755,root,root) %{_bindir}/fcitx-configtool
+# R: dbus
 %attr(755,root,root) %{_bindir}/fcitx-dbus-watcher
 %attr(755,root,root) %{_bindir}/fcitx-diagnose
+# R: dbus
 %attr(755,root,root) %{_bindir}/fcitx-remote
 %attr(755,root,root) %{_bindir}/fcitx-skin-installer
 %attr(755,root,root) %{_bindir}/mb2org
@@ -154,18 +237,50 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/scel2org
 %attr(755,root,root) %{_bindir}/txt2mb
 /etc/xdg/autostart/fcitx-autostart.desktop
-%attr(755,root,root) %{_libdir}/fcitx/fcitx-*.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-autoeng.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-chttrans.so
+# R: libX11 libXext cairo pango
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-classic-ui.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-clipboard.so
+# R: dbus
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-dbus.so
+# R: dbus
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-freedesktop-notify.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-fullwidth-char.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-imselector.so
+# R: dbus
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-ipc.so
+# R: dbus libuuid
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-ipcportal.so
+# R: json-c xkbcommon
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-keyboard.so
+# R: dbus
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-kimpanel-ui.so
+# R: lua52
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-lua.so
+# R: dbus
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-notificationitem.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-pinyin.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-pinyin-enhance.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-punc.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-quickphrase.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-qw.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-remote-module.so
+# dlopens enchant or presage
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-spell.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-table.so
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-unicode.so
+# R: libX11 cairo pango
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-vk.so
+# R: libX11 libXfixes libXinerama libXrender
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-x11.so
+# R: libX11 libxkbfile libxml2
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-xkb.so
+# R: dbus json-c
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-xkbdbus.so
+# R: libX11
+%attr(755,root,root) %{_libdir}/fcitx/fcitx-xim.so
 %attr(755,root,root) %{_libdir}/fcitx/libexec/comp-spell-dict
-%if %{with qt}
-%attr(755,root,root) %{_libdir}/fcitx/libexec/fcitx-qt-gui-wrapper
-%attr(755,root,root) %{_libdir}/qt4/plugins/inputmethods/qtim-fcitx.so
-%endif
-%if %{with gtk2}
-%attr(755,root,root) %{_libdir}/gtk-2.0/2.*/immodules/im-fcitx.so
-%endif
-%if %{with gtk3}
-%attr(755,root,root) %{_libdir}/gtk-3.0/3.*/immodules/im-fcitx.so
-%endif
 %{_datadir}/dbus-1/services/org.fcitx.Fcitx.service
 %{_datadir}/fcitx
 %{_datadir}/mime/packages/x-fskin.xml
@@ -184,21 +299,26 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/scel2org.1*
 %{_mandir}/man1/txt2mb.1*
 
+%if %{with gtk2}
+%files gtk2
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/gtk-2.0/2.*/immodules/im-fcitx.so
+%endif
+
+%if %{with gtk3}
+%files gtk3
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/gtk-3.0/3.*/immodules/im-fcitx.so
+%endif
+
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libfcitx-config.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfcitx-config.so.4
 %attr(755,root,root) %{_libdir}/libfcitx-core.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfcitx-core.so.0
-%attr(755,root,root) %{_libdir}/libfcitx-gclient.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libfcitx-gclient.so.1
 %attr(755,root,root) %{_libdir}/libfcitx-utils.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfcitx-utils.so.0
-%if %{with qt}
-%attr(755,root,root) %{_libdir}/libfcitx-qt.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libfcitx-qt.so.0
-%endif
-%{_libdir}/girepository-1.0/Fcitx-1.0.typelib
 # common for base and -devel
 %dir %{_libdir}/fcitx
 %dir %{_libdir}/fcitx/libexec
@@ -208,23 +328,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/fcitx4-config
 %attr(755,root,root) %{_libdir}/libfcitx-config.so
 %attr(755,root,root) %{_libdir}/libfcitx-core.so
-%attr(755,root,root) %{_libdir}/libfcitx-gclient.so
 %attr(755,root,root) %{_libdir}/libfcitx-utils.so
 %attr(755,root,root) %{_libdir}/fcitx/libexec/fcitx-po-parser
 %attr(755,root,root) %{_libdir}/fcitx/libexec/fcitx-scanner
 %{_includedir}/fcitx
 %{_includedir}/fcitx-config
-%{_includedir}/fcitx-gclient
 %{_includedir}/fcitx-utils
-%{_datadir}/gir-1.0/Fcitx-1.0.gir
 %{_pkgconfigdir}/fcitx.pc
 %{_pkgconfigdir}/fcitx-config.pc
-%{_pkgconfigdir}/fcitx-gclient.pc
-%if %{with qt}
-%attr(755,root,root) %{_libdir}/libfcitx-qt.so
-%{_includedir}/fcitx-qt
-%{_pkgconfigdir}/fcitx-qt.pc
-%endif
 %{_pkgconfigdir}/fcitx-utils.pc
 %dir %{_datadir}/cmake/fcitx
 %{_datadir}/cmake/fcitx/Fcitx*.cmake
@@ -236,3 +347,31 @@ rm -rf $RPM_BUILD_ROOT
 # shell function libs
 %{_datadir}/cmake/fcitx/fcitx-parse-po.sh
 %{_datadir}/cmake/fcitx/fcitx-write-po.sh
+
+%files glib
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libfcitx-gclient.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libfcitx-gclient.so.1
+%{_libdir}/girepository-1.0/Fcitx-1.0.typelib
+
+%files glib-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libfcitx-gclient.so
+%{_includedir}/fcitx-gclient
+%{_datadir}/gir-1.0/Fcitx-1.0.gir
+%{_pkgconfigdir}/fcitx-gclient.pc
+
+%if %{with qt}
+%files qt
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libfcitx-qt.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libfcitx-qt.so.0
+%attr(755,root,root) %{_libdir}/fcitx/libexec/fcitx-qt-gui-wrapper
+%attr(755,root,root) %{_libdir}/qt4/plugins/inputmethods/qtim-fcitx.so
+
+%files qt-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libfcitx-qt.so
+%{_includedir}/fcitx-qt
+%{_pkgconfigdir}/fcitx-qt.pc
+%endif
