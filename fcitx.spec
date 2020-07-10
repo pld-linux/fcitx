@@ -217,6 +217,12 @@ rm -rf $RPM_BUILD_ROOT
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
+%post	glib -p /sbin/ldconfig
+%postun	glib -p /sbin/ldconfig
+
+%post	qt -p /sbin/ldconfig
+%postun	qt -p /sbin/ldconfig
+
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING.LIBS COPYING.MIT ChangeLog README THANKS doc/{API.txt,Develop_Readme,cjkvinput.txt,pinyin.txt,wb_fh.htm}
