@@ -14,6 +14,16 @@ License:	GPL v2+ with plugins exception
 Group:		X11/Applications
 Source0:	https://download.fcitx-im.org/fcitx/%{name}-%{version}.tar.xz
 # Source0-md5:	c58869c4ef9d3f57287a3d1f539c9850
+Source1:	https://download.fcitx-im.org/data/en_dict-20121020.tar.gz
+# Source1-md5:	8315f85331e0545c256a46e0cb00f10f
+Source2:	https://download.fcitx-im.org/data/py_table-20121124.tar.gz
+# Source2-md5:	a72e275fe1916d67d01a2f038ca5d920
+Source3:	https://download.fcitx-im.org/data/py_stroke-20121124.tar.gz
+# Source3-md5:	2559d025c5bbb50fa450a02429f92762
+Source4:	https://download.fcitx-im.org/data/pinyin.tar.gz
+# Source4-md5:	34dcb1b5209c28baa4e87f6a2773bfd0
+Source5:	https://download.fcitx-im.org/data/table.tar.gz
+# Source5-md5:	acb0b112423474ab2c1a22cee590d636
 URL:		https://fcitx-im.org/
 BuildRequires:	cairo-devel >= 1.0
 BuildRequires:	cmake >= 3.1
@@ -181,6 +191,12 @@ Pliki nagłówkowe biblioteki klienckiej/GUI Fcitx dla Qt.
 
 %prep
 %setup -q
+
+cp -p %{SOURCE1} src/module/spell/dict
+cp -p %{SOURCE2} src/module/pinyin-enhance/data
+cp -p %{SOURCE3} src/module/pinyin-enhance/data
+cp -p %{SOURCE4} src/im/pinyin/data
+cp -p %{SOURCE5} src/im/table/data
 
 %{__sed} -i -e '1s,/usr/bin/env bash,/bin/bash,' \
 	cmake/fcitx-{cmake-helper,extract-{confdesc,desktop,gettext,kde,po,qt},merge-config}.sh \
