@@ -9,7 +9,7 @@ Summary:	Fcitx - input method framework with extension support
 Summary(pl.UTF-8):	Fcitx - szkielet metody wprowadzania znaków z obsługą rozszerzeń
 Name:		fcitx
 Version:	4.2.9.9
-Release:	1
+Release:	2
 License:	GPL v2+ with plugins exception
 Group:		X11/Applications
 Source0:	https://download.fcitx-im.org/fcitx/%{name}-%{version}.tar.xz
