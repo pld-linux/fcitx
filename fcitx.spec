@@ -9,7 +9,7 @@ Summary:	Fcitx - input method framework with extension support
 Summary(pl.UTF-8):	Fcitx - szkielet metody wprowadzania znaków z obsługą rozszerzeń
 Name:		fcitx
 Version:	4.2.9.9
-Release:	3
+Release:	4
 License:	GPL v2+ with plugins exception
 Group:		X11/Applications
 Source0:	https://download.fcitx-im.org/fcitx/%{name}-%{version}.tar.xz
@@ -24,6 +24,7 @@ Source4:	https://download.fcitx-im.org/data/pinyin.tar.gz
 # Source4-md5:	34dcb1b5209c28baa4e87f6a2773bfd0
 Source5:	https://download.fcitx-im.org/data/table.tar.gz
 # Source5-md5:	acb0b112423474ab2c1a22cee590d636
+Patch0:		build.patch
 URL:		https://fcitx-im.org/
 BuildRequires:	cairo-devel >= 1.0
 BuildRequires:	cmake >= 3.1
@@ -191,6 +192,7 @@ Pliki nagłówkowe biblioteki klienckiej/GUI Fcitx dla Qt.
 
 %prep
 %setup -q
+%patch -P0 -p1
 
 cp -p %{SOURCE1} src/module/spell/dict
 cp -p %{SOURCE2} src/module/pinyin-enhance/data

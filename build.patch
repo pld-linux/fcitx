@@ -1,0 +1,10 @@
+--- fcitx-4.2.9.9/src/frontend/qt/qtkey.h~	2022-07-26 22:02:02.000000000 +0200
++++ fcitx-4.2.9.9/src/frontend/qt/qtkey.h	2025-08-20 11:32:50.268838123 +0200
+@@ -20,6 +20,7 @@
+ #ifndef _PLATFORMINPUTCONTEXT_QTKEY_H_
+ #define _PLATFORMINPUTCONTEXT_QTKEY_H_
+ 
++#include <cstdint>
+ #include <QString>
+ 
+ int keysymToQtKey(uint32_t keysym, const QString &text);
